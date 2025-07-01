@@ -40,12 +40,12 @@ mkdir -p public
 
 Create these files in `/opt/baseball-scouting/`:
 
-**server.js** (Node.js server code)
+**server.js** (Main Node.js application)
 **public/index.html** (Frontend HTML/CSS/JS)
-**package.json** (Required package.json file and settings)
-**Dockerfile** (Required Dockerfile)
-**docker-compose.yml** (docker-compose file with config)
-**.dockerignore** (dockerignore file)
+**package.json** (Node.js dependencies)
+**Dockerfile** (Container build instructions)
+**docker-compose.yml** (Multi-container setup)
+**.dockerignore** (Files to exclude from Docker build)
 
 ### 4. Create Environment Configuration
 ```bash
