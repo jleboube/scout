@@ -77,7 +77,7 @@ docker compose logs -f
 ```
 
 ### 6. Configure Nginx Proxy Manager
-1. Wait for services to fully start (check with `docker-compose logs`)
+1. Wait for services to fully start (check with `docker compose logs`)
 2. Access Nginx Proxy Manager admin at: `http://your-server-ip:81`
 3. Default login credentials:
    - Email: `admin@example.com`
@@ -139,10 +139,10 @@ Use one of these registration codes:
 ### View Application Status
 ```bash
 # Check container status
-docker-compose ps
+docker compose ps
 
 # View real-time logs
-docker-compose logs -f baseball-scouting-app
+docker compose logs -f baseball-scouting-app
 
 # Check container resource usage
 docker stats
@@ -151,23 +151,23 @@ docker stats
 ### Restart Services
 ```bash
 # Restart all services
-docker-compose restart
+docker compose restart
 
 # Restart only the app
-docker-compose restart baseball-scouting-app
+docker compose restart baseball-scouting-app
 
 # Restart with rebuild
-docker-compose up -d --build
+docker compose up -d --build
 ```
 
 ### Update Application
 ```bash
 # Pull latest changes and rebuild
-docker-compose down
-docker-compose up -d --build
+docker compose down
+docker compose up -d --build
 
 # View startup logs
-docker-compose logs -f
+docker compose logs -f
 ```
 
 ### Data Management
@@ -212,24 +212,24 @@ sudo systemctl stop apache2 nginx
 **1. App Won't Start**
 ```bash
 # Check detailed logs
-docker-compose logs baseball-scouting-app
+docker compose logs baseball-scouting-app
 
 # Check if database directory is writable
-docker-compose exec baseball-scouting-app ls -la /app/data
+docker compose exec baseball-scouting-app ls -la /app/data
 ```
 
 **2. Database Connection Issues**
 ```bash
 # Restart with fresh database
-docker-compose down
+docker compose down
 docker volume rm baseball-scouting_app-data
-docker-compose up -d --build
+docker compose up -d --build
 ```
 
 **3. File Upload Problems**
 ```bash
 # Check uploads volume
-docker-compose exec baseball-scouting-app ls -la /app/uploads
+docker compose exec baseball-scouting-app ls -la /app/uploads
 
 # Check volume permissions
 docker volume inspect baseball-scouting_app-uploads
@@ -243,7 +243,7 @@ docker volume inspect baseball-scouting_app-uploads
 curl -f http://localhost:3000/ || echo "App is down"
 
 # Check Docker container health
-docker-compose ps
+docker compose ps
 
 # Monitor resource usage
 docker stats --no-stream
@@ -282,8 +282,8 @@ sudo ufw --force enable
 sudo apt update && sudo apt upgrade -y
 
 # Update Docker images
-docker-compose pull
-docker-compose up -d --build
+docker compose pull
+docker compose up -d --build
 
 # Clean up old images
 docker image prune -f
@@ -299,7 +299,7 @@ docker image prune -f
 ### For Higher Traffic
 ```bash
 # Scale app instances
-docker-compose up -d --scale baseball-scouting-app=3
+docker compose up -d --scale baseball-scouting-app=3
 
 # Add load balancer configuration in Nginx Proxy Manager
 ```
