@@ -42,10 +42,10 @@ Create these files in `/opt/baseball-scouting/`:
 
 **server.js** (Node.js server code)
 **public/index.html** (Frontend HTML/CSS/JS)
-**package.json** 
-**Dockerfile** 
-**docker-compose.yml** 
-**.dockerignore** 
+**package.json** (Required package.json file and settings)
+**Dockerfile** (Required Dockerfile)
+**docker-compose.yml** (docker-compose file with config)
+**.dockerignore** (dockerignore file)
 
 ### 4. Create Environment Configuration
 ```bash
