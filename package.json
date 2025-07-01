@@ -1,5 +1,3 @@
-
-
 {
   "name": "baseball-scouting-reports",
   "version": "1.0.0",
@@ -33,4 +31,3 @@
     "node": ">=16.0.0"
   }
 }
-

@@ -1,38 +1,58 @@
 # docker-compose.yml
+
 services:
   baseball-scouting-app:
-    build: .
+    build: 
+      context: .
+      dockerfile: Dockerfile
     container_name: baseball-scouting-app
     restart: unless-stopped
     environment:
-      - NODE_ENV=production
-      - PORT=3000
-      - SESSION_SECRET=your-super-secret-session-key-change-this-in-production
+      NODE_ENV: production
+      PORT: 3000
+      SESSION_SECRET: ${SESSION_SECRET:-your-super-secret-session-key-change-this-in-production}
     volumes:
-      - ./data:/app/data
-      - ./uploads:/app/uploads
+      - app-data:/app/data
+      - app-uploads:/app/uploads
     networks:
       - baseball-network
-    depends_on:
-      - nginx-proxy-manager
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
   nginx-proxy-manager:
-    image: jc21/nginx-proxy-manager:latest
+    image: 'jc21/nginx-proxy-manager:latest'
     container_name: nginx-proxy-manager
     restart: unless-stopped
     ports:
-      - "80:80"
-      - "443:443"
-      - "81:81"  # Admin interface
+      - '80:80'
+      - '443:443'
+      - '81:81'
     environment:
-      - DB_SQLITE_FILE=/data/database.sqlite
+      DB_SQLITE_FILE: "/data/database.sqlite"
+      DISABLE_IPV6: 'true'
     volumes:
-      - ./nginx-data:/data
-      - ./nginx-letsencrypt:/etc/letsencrypt
+      - nginx-data:/data
+      - nginx-certs:/etc/letsencrypt
     networks:
       - baseball-network
+    depends_on:
+      baseball-scouting-app:
+        condition: service_healthy
+
+volumes:
+  app-data:
+    driver: local
+  app-uploads:
+    driver: local
+  nginx-data:
+    driver: local
+  nginx-certs:
+    driver: local
 
 networks:
   baseball-network:
     driver: bridge
-
