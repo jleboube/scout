@@ -40,12 +40,12 @@ mkdir -p public
 
 Create these files in `/opt/baseball-scouting/`:
 
-**server.js** (copy from first artifact - Node.js server code)
-**public/index.html** (copy from second artifact - Frontend HTML/CSS/JS)
-**package.json** (copy from third artifact)
-**Dockerfile** (copy from third artifact)
-**docker-compose.yml** (copy from third artifact)
-**.dockerignore** (copy from third artifact)
+**server.js** (Node.js server code)
+**public/index.html** (Frontend HTML/CSS/JS)
+**package.json** 
+**Dockerfile** 
+**docker-compose.yml** 
+**.dockerignore** 
 
 ### 4. Create Environment Configuration
 ```bash
@@ -67,13 +67,13 @@ echo "SESSION_SECRET=$(openssl rand -base64 32)" >> .env
 cd /opt/baseball-scouting
 
 # Build and start the services
-docker-compose up -d --build
+docker compose up -d --build
 
 # Check if services are running
-docker-compose ps
+dockern compose ps
 
 # View logs to verify startup
-docker-compose logs -f
+docker compose logs -f
 ```
 
 ### 6. Configure Nginx Proxy Manager
