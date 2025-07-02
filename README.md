@@ -1,4 +1,3 @@
-# deployment-guide.md
 # Baseball Scouting Reports - Docker Deployment Guide
 
 ## Prerequisites
@@ -40,12 +39,12 @@ mkdir -p public
 
 Create these files in `/opt/baseball-scouting/`:
 
-**server.js** (Main Node.js application)
-**public/index.html** (Frontend HTML/CSS/JS)
-**package.json** (Node.js dependencies)
-**Dockerfile** (Container build instructions)
-**docker-compose.yml** (Multi-container setup)
-**.dockerignore** (Files to exclude from Docker build)
+**server.js** (copy from first artifact - Node.js server code)
+**public/index.html** (copy from second artifact - Frontend HTML/CSS/JS)
+**package.json** (copy from third artifact)
+**Dockerfile** (copy from third artifact)
+**docker-compose.yml** (copy from third artifact)
+**.dockerignore** (copy from third artifact)
 
 ### 4. Create Environment Configuration
 ```bash
@@ -70,9 +69,9 @@ cd /opt/baseball-scouting
 docker compose up -d --build
 
 # Check if services are running
-dockern compose ps
+docker compose ps
 
-# View logs to verify startup
+# View logs to verify startup (should no longer show session store warnings)
 docker compose logs -f
 ```
 
@@ -172,7 +171,7 @@ docker compose logs -f
 
 ### Data Management
 ```bash
-# Backup application data
+# Backup application data (includes both main database and session database)
 docker run --rm -v baseball-scouting_app-data:/data -v $(pwd):/backup alpine tar czf /backup/app-data-backup-$(date +%Y%m%d-%H%M%S).tar.gz -C /data .
 
 # Backup uploaded files
@@ -182,9 +181,47 @@ docker run --rm -v baseball-scouting_app-uploads:/uploads -v $(pwd):/backup alpi
 docker volume ls
 ```
 
+### Session Store
+The application now uses a SQLite-based session store that:
+- Eliminates the production memory leak warning
+- Persists sessions across container restarts
+- Scales properly with multiple instances
+- Stores session data in `./data/sessions.db`
+
 ## Troubleshooting
 
-### Common Build Issues
+### Session Store Warning Fix
+
+**Problem**: Seeing "MemoryStore is not designed for a production environment" warning and data not persisting.
+
+**Solution**:
+```bash
+# 1. Stop the application
+docker compose down
+
+# 2. Force clean rebuild (no cache)
+docker compose build --no-cache baseball-scouting-app
+
+# 3. Start and check logs
+docker compose up -d
+docker compose logs -f baseball-scouting-app
+
+# Look for these success messages:
+# ✅ SQLite session store initialized successfully
+# 📊 Session store type: SQLiteStore
+```
+
+**If the warning persists**, manually verify `package.json` includes:
+```json
+"connect-sqlite3": "^0.9.13"
+```
+
+**Alternative Manual Fix** (if automated fix fails):
+```bash
+# Enter the container and install the package manually
+docker compose exec baseball-scouting-app npm install connect-sqlite3
+docker compose restart baseball-scouting-app
+```
 
 **1. npm ci Error (already fixed)**
 - The Dockerfile now uses `npm install --omit=dev` instead of `npm ci`
